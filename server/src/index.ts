@@ -1,9 +1,9 @@
-import app from './app';
+import server from './app';
 import { connectDB } from './libs/mongodb';
 
 const PORT = process.env.PORT || 4000;
 
 connectDB();
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`server running at port: ${PORT}`);
 });
