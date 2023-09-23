@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
+import { ChatMessages } from '../../components';
 
 const URL = 'http://localhost:3000';
 
@@ -14,6 +15,7 @@ export default function Home() {
 
     setMessages([...messages, newMessage]);
     setNewMessage('');
+    socket.emit('chat-message', newMessage);
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -22,7 +24,7 @@ export default function Home() {
 
   const sendMessage = (message: string) => {
     setMessages((prevState) => [...prevState, message]);
-  }
+  };
 
   useEffect(() => {
     socket.on('chat-message', sendMessage);
@@ -49,13 +51,7 @@ export default function Home() {
             <p>+ New Chat</p>
           </div>
         </div>
-        <div>
-          <ul>
-            {messages.map((message, i) => (
-              <li key={`${message} ${i}`}>{message}</li>
-            ))}
-          </ul>
-        </div>
+        <ChatMessages messages={messages} />
       </article>
     </section>
   )

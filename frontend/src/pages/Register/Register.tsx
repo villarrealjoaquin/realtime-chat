@@ -1,7 +1,8 @@
 import { useState } from "react";
-import axios, { AxiosError } from 'axios';
+import { useAuth } from "../../hook/useAuth";
 
 const formValues = {
+  id: '',
   username: '',
   password: '',
   email: ''
@@ -9,16 +10,11 @@ const formValues = {
 
 export default function Register() {
   const [values, setValues] = useState(formValues);
+  const { registerUser } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    try {
-      await axios.post('http://localhost:3000/api/register', values)
-    } catch (error) {
-      if (error instanceof AxiosError)
-        console.log(error.response?.data);
-    }
+    registerUser(values);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
