@@ -1,13 +1,13 @@
 export const ChatMessages = ({ messages }: { messages: string[] }) => {
   return (
     <>
-      <div>
+      <div className="h-full p-10 ml-auto">
         <ul>
           {messages.map((message, i) => (
-            <li key={`${message} ${i}`}>{message}</li>
+            <li className="" key={`${message} ${i}`}>{message}</li>
           ))}
         </ul>
       </div>
     </>
   )
-}
+};

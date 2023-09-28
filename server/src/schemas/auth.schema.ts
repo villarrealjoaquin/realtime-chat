@@ -9,7 +9,8 @@ export const registerSchema = z.object({
   }),
   password: z.string({
     required_error: 'Password is Required'
-  }).min(6)
+  }).min(6),
+  alias: z.string().optional()
 });
 
 export const loginSchema = z.object({
