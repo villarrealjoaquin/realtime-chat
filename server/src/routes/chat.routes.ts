@@ -1,10 +1,9 @@
 import { Router } from "express";
 import {
   addContact,
-  getContact,
-  getDataOfUser
+  deleteContact,
+  getContact
 } from "../controllers/chat.controller";
-import { validateToken } from "../middlewares/validateToken";
 
 const router = Router();
 
@@ -13,7 +12,7 @@ const router = Router();
 // router.get('/contacts', validateToken, getDataOfUser);
 
 router.post('/', getContact);
-router.post('/', addContact);
-router.get('/', getDataOfUser);
+router.post('/add', addContact);
+router.delete('/:id', deleteContact);
 
 export default router;

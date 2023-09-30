@@ -10,7 +10,12 @@ const messageSchema = new Schema({
 });
 
 const conversationSchema = new Schema({
-  participants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  participants: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ],
   messages: [messageSchema]
 });
 

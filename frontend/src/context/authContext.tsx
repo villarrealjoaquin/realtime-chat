@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { SetStateAction, createContext, useEffect, useState } from "react";
 import {
   loginUserRequest,
   registerUserRequest,
@@ -17,8 +17,8 @@ export interface Values {
   email: string;
   password: string;
   username?: string;
-  contacts: [];
-  conversations: [];
+  contacts?: [];
+  conversations?: Values[];
 }
 
 interface Auth {
@@ -26,7 +26,8 @@ interface Auth {
   isAuthenticated: boolean;
   loginUser: (user: Values) => void;
   registerUser: (user: Values) => void;
-  isLoading: boolean
+  isLoading: boolean;
+  setUser: React.Dispatch<SetStateAction<Values | null>>;
 }
 
 export const AuthContext = createContext<Auth | null>(null);
@@ -35,7 +36,7 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
   const [user, setUser] = useState<Values | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  
   const navigate = useNavigate();
 
   const loginUser = async (user: Values) => {
@@ -44,9 +45,7 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
       setUser(res.data);
       setIsAuthenticated(true);
       navigate('/home')
-      console.log(res);
     } catch (error) {
-      console.log(error);
       setIsAuthenticated(false);
       setUser(null);
     }
@@ -55,14 +54,12 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
   const registerUser = async (user: Values) => {
     try {
       const res = await registerUserRequest(user);
-      // setUser(res.data);
+      setUser(res.data);
       setIsAuthenticated(true);
       navigate('/home')
-      console.log(res);
     } catch (error) {
       setIsAuthenticated(false);
       setUser(null);
-      console.log(error);
     }
   };
 
@@ -73,8 +70,6 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
       try {
         const response = await verifyTokenRequest();
         if (response) {
-          console.log('estoy bien');
-          console.log(response);
           setIsAuthenticated(true);
           setUser(response.data);
           setIsLoading(false)
@@ -85,8 +80,6 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
         setIsAuthenticated(false)
         setUser(null)
         setIsLoading(false)
-        console.log(error);
-        console.log('entre al catch del verify');
       }
     }
   };
@@ -101,7 +94,8 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
       isAuthenticated,
       isLoading,
       loginUser,
-      registerUser
+      registerUser,
+      setUser
     }}>
       {children}
     </AuthContext.Provider>

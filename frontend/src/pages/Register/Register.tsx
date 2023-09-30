@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { useAuth } from "../../hook/useAuth";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 const formValues = {
   id: '',
@@ -12,13 +10,11 @@ const formValues = {
 
 export default function Register() {
   const [values, setValues] = useState(formValues);
-  const { registerUser, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const { registerUser } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     registerUser(values);
-    navigate('/');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,10 +23,6 @@ export default function Register() {
       [e.target.name]: e.target.value
     })
   };
-
-  useEffect(() => {
-    if(isAuthenticated) navigate('/');
-  }, [])
 
   return (
     <div className="h-screen grid place-content-center">

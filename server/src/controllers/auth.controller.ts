@@ -26,6 +26,7 @@ export const register = async (req: Request, res: Response) => {
 
     const secretKey = process.env.SECRET_KEY;
     if (!secretKey) return res.status(500).json({ message: "Internal server error" });
+    
     const token = jwt.sign({ id: newUser._id, username, email }, secretKey);
 
     res.cookie('chatToken', token);
@@ -70,25 +71,21 @@ export const login = async (req: Request, res: Response) => {
       res.status(500).json({ message: error.message });
     };
   };
-}
+};
 
 export const verifyToken = async (req: Request, res: Response) => {
   const { chatToken } = req.cookies;
-  
-  if (!chatToken) return res.status(401).json({ message: 'Unauthorized 4' });
+
+  if (!chatToken) return res.status(401).json({ message: 'Unauthorized' });
 
   if (!process.env.SECRET_KEY) return res.status(500).json({ message: 'internal Server Error' });
 
   jwt.verify(chatToken, process.env.SECRET_KEY, async (err: VerifyErrors | null, user: any) => {
-    console.log(user);
+    if (err) return res.status(401).json({ message: 'Unauthorized' });
 
-    if (err) return res.status(401).json({ message: 'Unauthorized 1' })
-
-    const userFound = await userModel.findById(user.id)
-    console.log(userFound);
-
+    const userFound = await userModel.findById(user.id);
     if (!userFound) return res.status(401).json({
-      message: 'Unauthorized 2'
+      message: 'Unauthorized'
     });
 
     return res.json({
@@ -97,6 +94,6 @@ export const verifyToken = async (req: Request, res: Response) => {
       email: userFound.email,
       contacts: userFound.contacts,
       conversation: userFound.conversations
-    })
-  })
+    });
+  });
 };

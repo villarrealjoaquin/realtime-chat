@@ -9,8 +9,10 @@ const userSchema = new Schema({
   alias: String,
   contacts: [
     {
-      type: Schema.Types.ObjectId,
-      ref: 'Contact'
+      id: Schema.Types.ObjectId,
+      username: String,
+      email: String,
+      alias: String
     }
   ],
   conversations: [

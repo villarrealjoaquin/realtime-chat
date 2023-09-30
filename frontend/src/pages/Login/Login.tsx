@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hook/useAuth";
 
 function Login() {
@@ -13,7 +12,6 @@ function Login() {
   // const [error, setError] = useState<{ message: string } | null>(null);
   const { loginUser } = useAuth();
 
-  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
