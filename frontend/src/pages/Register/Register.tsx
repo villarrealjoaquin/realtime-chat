@@ -1,20 +1,21 @@
 import { useState } from "react";
 import { useAuth } from "../../hook/useAuth";
 
-const formValues = {
-  id: '',
-  username: '',
-  password: '',
-  email: ''
-};
-
 export default function Register() {
-  const [values, setValues] = useState(formValues);
-  const { registerUser } = useAuth();
+  const [values, setValues] = useState({
+    id: '',
+    username: '',
+    password: '',
+    email: '',
+    alias: '',
+    contacts: [],
+    conversatios: []
+  });
+  const { signUp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    registerUser(values);
+    signUp(values);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

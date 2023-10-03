@@ -33,7 +33,8 @@ export const register = async (req: Request, res: Response) => {
     res.json({
       id: createUser._id,
       username: createUser.username,
-      email: createUser.email
+      email: createUser.email,
+      alias: createUser.alias
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -55,8 +56,8 @@ export const login = async (req: Request, res: Response) => {
 
       const secretKey = process.env.SECRET_KEY;
       if (!secretKey) return res.status(500).json({ message: "Internal server error" });
-      const token = jwt.sign({ id: user.id }, secretKey);
 
+      const token = jwt.sign({ id: user.id }, secretKey);
       res.cookie('chatToken', token);
       res.json({
         id: user._id,

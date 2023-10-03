@@ -4,15 +4,12 @@ import {
   deleteContact,
   getContact
 } from "../controllers/chat.controller";
+import { validateToken } from "../middlewares/validateToken";
 
 const router = Router();
 
-// router.post('/', validateToken, getContact);
-// router.post('/', validateToken, addContact);
-// router.get('/contacts', validateToken, getDataOfUser);
-
-router.post('/', getContact);
-router.post('/add', addContact);
-router.delete('/:id', deleteContact);
+router.post('/', validateToken, getContact);
+router.post('/add', validateToken, addContact);
+router.delete('/:id/:email', validateToken, deleteContact);
 
 export default router;

@@ -31,7 +31,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/api', authRoutes);
-app.use('/home', chatRoutes);
-app.use('/chat', conversationRoutes)
+app.use('/api', chatRoutes);
+app.use('/api', conversationRoutes);
 
 export default server;

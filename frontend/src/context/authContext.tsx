@@ -1,62 +1,69 @@
-import { SetStateAction, createContext, useEffect, useState } from "react";
+import Cookies from 'js-cookie';
+import { createContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   loginUserRequest,
   registerUserRequest,
-  verifyTokenRequest,
-
+  verifyTokenRequest
 } from "../service/auth.service";
-import Cookies from 'js-cookie';
-import { useNavigate } from "react-router-dom";
 
 interface AuthContextProps {
   children: React.ReactNode;
 }
 
-export interface Values {
+interface Contact {
+  id: string;
+  username: string;
+  email: string;
+  alias:string;
+  _id:string;
+}
+
+export interface User {
   id: string;
   email: string;
-  password: string;
+  alias:string;
   username?: string;
-  contacts?: [];
-  conversations?: Values[];
+  contacts?: Contact[];
+  conversations?: [];
 }
 
 interface Auth {
-  user: Values | null;
+  user: User | null;
   isAuthenticated: boolean;
-  loginUser: (user: Values) => void;
-  registerUser: (user: Values) => void;
   isLoading: boolean;
-  setUser: React.Dispatch<SetStateAction<Values | null>>;
+  signIn: (user: User) => void;
+  signUp: (user: User) => void;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
 export const AuthContext = createContext<Auth | null>(null);
 
 export const AuthProvider = ({ children }: AuthContextProps) => {
-  const [user, setUser] = useState<Values | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   
   const navigate = useNavigate();
 
-  const loginUser = async (user: Values) => {
+  const signIn = async (user: User) => {
     try {
       const res = await loginUserRequest(user);
       setUser(res.data);
       setIsAuthenticated(true);
-      navigate('/home')
+      navigate('/home');
     } catch (error) {
       setIsAuthenticated(false);
       setUser(null);
     }
   };
 
-  const registerUser = async (user: Values) => {
+  const signUp = async (user: User) => {
     try {
       const res = await registerUserRequest(user);
       setUser(res.data);
       setIsAuthenticated(true);
-      navigate('/home')
+      navigate('/home');
     } catch (error) {
       setIsAuthenticated(false);
       setUser(null);
@@ -72,8 +79,7 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
         if (response) {
           setIsAuthenticated(true);
           setUser(response.data);
-          setIsLoading(false)
-          // setIsLoading(false)
+          setIsLoading(false);
           return;
         }
       } catch (error) {
@@ -93,8 +99,8 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
       user,
       isAuthenticated,
       isLoading,
-      loginUser,
-      registerUser,
+      signIn,
+      signUp,
       setUser
     }}>
       {children}

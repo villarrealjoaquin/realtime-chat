@@ -6,24 +6,27 @@ function Login() {
     id: '',
     password: '',
     email: '',
-    // contacts: [],
-    // conversations: []
+    alias: '',
+    contacts: [],
+    conversatios: []
   });
   // const [error, setError] = useState<{ message: string } | null>(null);
-  const { loginUser } = useAuth();
+  const { signIn } = useAuth();
 
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    loginUser(values);
+    signIn(values);
   };
-
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValues((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value
     }));
   };
+
+  
 
   return (
     <>
