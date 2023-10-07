@@ -94,6 +94,9 @@ export const AuthProvider = ({ children }: AuthContextProps) => {
     verifyToken();
   }, []);
 
+  console.log(user);
+  
+
   return (
     <AuthContext.Provider value={{
       user,

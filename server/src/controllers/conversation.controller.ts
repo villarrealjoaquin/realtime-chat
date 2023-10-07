@@ -1,18 +1,22 @@
-import { Request, Response } from "express";
-import conversationModel from "../models/messages.schema";
+import mongoose from "mongoose";
 import { CustomRequest } from "../middlewares/validateToken";
+import userModel from "../models/user.schema";
+import conversationModel from "../models/conversation.schema";
+import messageModel from "../models/messages.schema";
+import { Request, Response } from "express";
 
-export const getOrCreateConversation = async (user1Id: string, user2Id: string) => {
+export const getOrCreateConversation = async (user1Id: string, contactId: string) => {
   try {
-    // Busca una conversación existente con los mismos participantes
+    const user1ObjectId = new mongoose.Types.ObjectId(user1Id);
+    const user2ObjectId = new mongoose.Types.ObjectId(contactId);
+
     const existingConversation = await conversationModel.findOne({
-      participants: { $all: [user1Id, user2Id] }
+      participants: { $all: [user1ObjectId, user2ObjectId] }
     });
 
-    // Si no se encuentra ninguna conversación, crea una nueva
     if (!existingConversation) {
       const newConversation = new conversationModel({
-        participants: [user1Id, user2Id]
+        participants: [user1ObjectId, user2ObjectId]
       });
 
       const conversation = await newConversation.save();
@@ -21,7 +25,7 @@ export const getOrCreateConversation = async (user1Id: string, user2Id: string) 
 
     return existingConversation;
   } catch (error) {
-    throw error;
+    console.log(error);
   }
 };
 
@@ -33,13 +37,45 @@ export const getChat = async (req: CustomRequest, res: Response) => {
 
   try {
     const conversation = await getOrCreateConversation(userId, contactId);
+    console.log(conversation);
 
-    // Carga los mensajes de la conversación
-    await conversation.populate('messages');
+    const user = await userModel.findById(userId);
+    const foundContact = user?.contacts.find((contact) => contact.id?.toString() === contactId);
 
-    // Envía la conversación con los mensajes al cliente
-    res.json({ conversation });
+    const messages = await messageModel.find({
+      to: conversation?._id,
+    }).populate('sender');
+
+    await conversation?.populate('messages');
+    res.json({ conversation, user: foundContact });
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    console.log(error);
+    res.status(500).json({ error: 'Internal server error 10' });
+  }
+}
+
+export const addMessage = async (req: CustomRequest, res: Response) => {
+  const { newMessage, conversationId } = req.body;
+  const senderId = req.user?.id;
+
+  console.log({ newMessage, conversationId, senderId });
+
+  try {
+    const conversation = await conversationModel.findById(conversationId);
+    if (!conversation) return res.status(404).json({ message: 'Conversación not found' });
+
+    const message = new messageModel({
+      from: senderId,
+      to: conversation._id,
+      newMessage
+    });
+
+    await message.save();
+
+    conversation.messages.push(newMessage);
+    await conversation.save();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
 }

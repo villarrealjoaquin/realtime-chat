@@ -2,8 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import jwt, { VerifyErrors } from "jsonwebtoken";
 
 interface User {
-  id:string;
-  iat:number;
+  id: string;
+  iat: number;
+  alias: string;
+  username: string;
+  email: string;
 }
 
 export interface CustomRequest extends Request {
@@ -20,9 +23,9 @@ export const validateToken = (req: CustomRequest, res: Response, next: NextFunct
 
   jwt.verify(chatToken, secretKey, (err: VerifyErrors | null, user: any) => {
     console.log(user);
-    
+
     if (err) return res.status(403).json({ message: 'Token denied' });
-    req.user = user;
+    req.user = user as User;
     next();
   });
 };

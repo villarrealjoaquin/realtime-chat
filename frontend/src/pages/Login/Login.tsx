@@ -13,7 +13,6 @@ function Login() {
   // const [error, setError] = useState<{ message: string } | null>(null);
   const { signIn } = useAuth();
 
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     signIn(values);
@@ -25,8 +24,6 @@ function Login() {
       [e.target.name]: e.target.value
     }));
   };
-
-  
 
   return (
     <>

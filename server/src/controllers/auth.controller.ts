@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { Request, Response } from "express";
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 import shortId from 'shortid';
+import conversationModel from "../models/conversation.schema";
 
 export const register = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
@@ -26,8 +27,8 @@ export const register = async (req: Request, res: Response) => {
 
     const secretKey = process.env.SECRET_KEY;
     if (!secretKey) return res.status(500).json({ message: "Internal server error" });
-    
-    const token = jwt.sign({ id: newUser._id, username, email }, secretKey);
+
+    const token = jwt.sign({ id: newUser._id, username, email, alias }, secretKey);
 
     res.cookie('chatToken', token);
     res.json({
@@ -47,7 +48,7 @@ export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ email }).populate('conversations');
     if (!user) return res.status(400).json({ message: 'user not exist' });
 
     if (typeof user.password === 'string') {
@@ -57,7 +58,7 @@ export const login = async (req: Request, res: Response) => {
       const secretKey = process.env.SECRET_KEY;
       if (!secretKey) return res.status(500).json({ message: "Internal server error" });
 
-      const token = jwt.sign({ id: user.id }, secretKey);
+      const token = jwt.sign({ id: user.id, username: user.username, email, alias: user.alias }, secretKey);
       res.cookie('chatToken', token);
       res.json({
         id: user._id,
@@ -89,7 +90,7 @@ export const verifyToken = async (req: Request, res: Response) => {
       message: 'Unauthorized'
     });
 
-    return res.json({
+    res.json({
       id: userFound._id,
       username: userFound.username,
       email: userFound.email,
