@@ -4,7 +4,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 export const Sidebar = () => (
   <>
-    <article className='flex flex-col justify-between p-10 bg-slate-100 border-r-2'>
+    <article className='flex w-[5%] flex-col justify-between p-10 bg-slate-100 border-r-2'>
       <div className='flex flex-col gap-5 cursor-pointer justify-center items-center'>
         <ForumIcon />
         <Diversity3Icon />

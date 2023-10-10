@@ -9,7 +9,7 @@ export const ChatSidebar = ({ handleContactClick }: Props) => {
     <>
       <article className='flex flex-col gap-7 p-10 w-[22%] bg-slate-100 overflow-y-scroll'>
         <SearchContact />
-        <ContactList handleContactClick={handleContactClick} />
+        <ContactList handleContactClick={handleContactClick}  />
       </article>
     </>
   )

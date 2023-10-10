@@ -16,10 +16,19 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-  console.log('new user connected');
+  // console.log('new user connected');
+  console.log(socket.id);
+
+  socket.on('joinRoom', (roomName) => {
+    socket.join(roomName);
+    console.log(`Usuario ${socket.id} se ha unido a la sala: ${roomName}`);
+
+    const messages = ''
+  });
+
   socket.on('chat-message', (message) => {
     socket.broadcast.emit('chat-message', message);
-  })
+  });
 });
 
 app.use(cors({

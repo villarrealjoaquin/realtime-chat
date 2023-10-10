@@ -16,8 +16,7 @@ interface Message {
   conversatioId:string;
 }
 
-export const ChatMessages = ({ conversationId }: Props) => {
-  const [messages, setMessages] = useState<Array<string>>([]);
+export const ChatMessages = ({ conversationId, messages }: Props) => {
   const [newMessage, setNewMessage] = useState('');
   const [isUser, setIsUser] = useState(false)
 
@@ -29,8 +28,8 @@ export const ChatMessages = ({ conversationId }: Props) => {
     try {
       const res = await addMessage(newMessage, conversationId, user?.id);
       console.log(res);
-      setMessages([...messages, newMessage]);
       setNewMessage('');
+      
       socket.emit('chat-message', { newMessage, senderId: user?.id, conversationId });
     } catch (error) {
       console.log(error);
@@ -44,7 +43,7 @@ export const ChatMessages = ({ conversationId }: Props) => {
   const sendMessage = (message: Message) => {
     const condition = message.senderId === user?.id
     setIsUser(condition);
-    setMessages((prevState) => [...prevState, message.newMessage]);
+    // setMessages((prevState) => [...prevState, message.newMessage]);
   };
 
   useEffect(() => {

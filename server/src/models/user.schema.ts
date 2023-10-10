@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose';
 
 const userCollection = 'users';
 
+
 const userSchema = new Schema({
   username: String,
   password: String,
